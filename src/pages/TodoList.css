@@ -1,0 +1,14 @@
+.ant-checkbox-wrapper + .ant-checkbox-wrapper {
+    margin: 0 !important;
+}
+.ant-checkbox-wrapper{
+    width: 100%;
+}
+.listItem {
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+}
+span .ant-list-item {
+    width: 100%;
+}
