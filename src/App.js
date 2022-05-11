@@ -13,14 +13,14 @@ import "antd/dist/antd.css";
 
 function App() {
   const [actives, setActives] = useState([]);
-  const [coutActive, setCoutActive] = useState([]);
+  const [coutActive, setCoutActive] = useState(0);
 
   useEffect(() => {
     const getAll = async () => {
       try {
         const { data } = await getActive();
-        const coutActive = (data.filter(item => item.status === 0)).length
-        setCoutActive(coutActive)
+        const coutActive = data.filter((item) => item.status === 0).length;
+        setCoutActive(coutActive);
         setActives(data);
       } catch (error) {
         console.log(error);
@@ -33,7 +33,7 @@ Lời đầu tiên cho phép em cảm ơn vì đã quan tâm đến sản phẩm
 Trong website có đầy đủ các chức năng CRUD và confirm khi thực hiện các hành động.
 Bài có sử dụng 1 số thư viện như Antd, Axios, React-router-dom
 Chú ý: Website có sử dụng mockApi nên tốc độ phản hồi có thể hơi chậm
-    `)
+    `);
   }, []);
 
   const getCompleted = async () => {
@@ -61,6 +61,7 @@ Chú ý: Website có sử dụng mockApi nên tốc độ phản hồi có thể
             message: "Thêm thành công !",
           });
           setActives([...actives, res.data]);
+          setCoutActive(coutActive + 1);
         });
       },
     });
@@ -74,7 +75,10 @@ Chú ý: Website có sử dụng mockApi nên tốc độ phản hồi có thể
           notification.success({
             message: "Xóa thành công !",
           });
-          setActives(actives.filter(item => item.id !== res.data.id))
+          setActives(actives.filter((item) => item.id !== res.data.id));
+          if (res.data.status === 0) {
+            setCoutActive(coutActive - 1);
+          }
         });
       },
     });
@@ -91,7 +95,7 @@ Chú ý: Website có sử dụng mockApi nên tốc độ phản hồi có thể
         notification.success({
           message: "Cập nhật trạng thái: Hoàn thành",
         });
-        setCoutActive(coutActive - 1)
+        setCoutActive(coutActive - 1);
       });
     } else {
       updateActive({ ...active, status: 0 }).then((res) => {
@@ -102,7 +106,7 @@ Chú ý: Website có sử dụng mockApi nên tốc độ phản hồi có thể
         notification.success({
           message: "Cập nhật trạng thái: Chưa hoàn thành!",
         });
-        setCoutActive(coutActive + 1)
+        setCoutActive(coutActive + 1);
       });
     }
   };
@@ -113,13 +117,13 @@ Chú ý: Website có sử dụng mockApi nên tốc độ phản hồi có thể
         const { data } = await getActive();
         const listComleted = data.filter((item) => item.status !== 0);
         for (const value of listComleted) {
-          removeActive(value.id).then((res) => {
+          await removeActive(value.id).then((res) => {
             notification.success({
               message: "Xóa thành công",
             });
-            setActives(actives.filter(item => item.id !== res.data.id))
           });
         }
+        getAll()
       },
     });
   };
